@@ -37,8 +37,17 @@ router.patch('/api/posts/:id', (req, res, next) => {
 // Deleting a post
 router.delete('/api/posts/:id', (req, res, next) => {
     Post.findByIdAndRemove(req.params.id)
-        .then(apiResult => res.status(204).json(apiResult))
-        .catch(apiError => res.status(500).json(apiError))
+        .then((apiResult) => {
+            console.log(apiResult)
+            if (apiResult === null) {
+                res.status(404).json({ message: "Post to delete not found" });
+            } else {
+                res.status(204).json(apiResult);
+            }
+        })
+        .catch((apiError) => {
+            res.status(500).json(apiError)
+        })
 });
 
 

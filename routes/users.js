@@ -37,8 +37,17 @@ router.patch('/api/users/:id', (req, res, next) => {
 // Deleting a user
 router.delete('/api/users/:id', (req, res, next) => {
     User.findByIdAndRemove(req.params.id)
-        .then(apiResult => res.status(204).json(apiResult))
-        .catch(apiError => res.status(500).json(apiError))
+        .then((apiResult) => {
+            console.log(apiResult)
+            if (apiResult === null) {
+                res.status(404).json({ message: "User to delete not found" });
+            } else {
+                res.status(204).json(apiResult);
+            }
+        })
+        .catch((apiError) => {
+            res.status(500).json(apiError)
+        })
 });
 
 
