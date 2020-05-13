@@ -45,5 +45,7 @@ const authRouter = require("./routes/auth");
 
 app.use("/", indexRouter);
 app.use("/api/auth", authRouter);
+app.use("/", require("./routes/users"));
+app.use('/', require("./routes/posts"));
 
 module.exports = app;
