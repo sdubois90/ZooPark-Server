@@ -47,5 +47,6 @@ app.use("/", indexRouter);
 app.use("/api/auth", authRouter);
 app.use("/", require("./routes/users"));
 app.use('/', require("./routes/posts"));
+app.use('/', require("./routes/comments"));
 
 module.exports = app;
