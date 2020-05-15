@@ -5,7 +5,7 @@ const Post = require('../models/Post');
 
 // Find all posts
 router.get('/api/posts', (req, res, next) => {
-    Post.find({})
+    Post.find({}).populate('user')
         .then(apiResult => {
             console.log(apiResult);
             res.status(200).json(apiResult)
@@ -22,6 +22,7 @@ router.get('/api/posts/:id', (req, res, next) => {
 
 // Creating a post
 router.post('/api/posts', (req, res, next) => {
+    // CREATE AN OBJECT WITH THE TEXT AND THE CURRENT USER , AND PASS IT TO THE CREATE
     Post.create(req.body)
         .then(apiResult => res.status(201).json(apiResult))
         .catch(apiError => res.status(500).json(apiError))
