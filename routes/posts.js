@@ -23,10 +23,22 @@ router.get('/api/posts/:id', (req, res, next) => {
 // Creating a post
 router.post('/api/posts', (req, res, next) => {
     // CREATE AN OBJECT WITH THE TEXT AND THE CURRENT USER , AND PASS IT TO THE CREATE
-    Post.create(req.body)
+    console.log(req.session.currentUser._id)
+    const userPost = {
+        user: req.session.currentUser._id,    // id of the user creating the post
+        text: req.body.text             // The text of the post
+    }
+// Creating : new Post() + save() and we consume the promise by populating it
+// Then we consume again
+// It is like a create + populate
+    const post = new Post(userPost)
+    post.save().then(post => post.populate('user').execPopulate())
         .then(apiResult => res.status(201).json(apiResult))
         .catch(apiError => res.status(500).json(apiError))
 })
+// Post.create(userPost).then(post => post.populate('user').execPopulate())
+//     .then(apiResult => res.status(201).json(apiResult))
+//     .catch(apiError => res.status(500).json(apiError))
 
 // Updating a post
 router.patch('/api/posts/:id', (req, res, next) => {
