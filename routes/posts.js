@@ -26,7 +26,7 @@ router.post('/api/posts', (req, res, next) => {
     console.log(req.session.currentUser._id)
     const userPost = {
         user: req.session.currentUser._id,    // id of the user creating the post
-        text: req.body.text             // The text of the post
+        text: req.body.text                   // The text of the post
     }
 // Creating : new Post() + save() and we consume the promise by populating it
 // Then we consume again

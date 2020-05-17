@@ -14,10 +14,21 @@ router.get('/api/users', (req, res, next) => {
 })
 
 // Find a user in particular
+// router.get('/api/users/:id', (req, res, next) => {
+//     User.findById(req.params.id)
+//         .then(apiResult => res.status(200).json(apiResult))
+//         .catch(apiError => res.status(500).json(apiError))
+// });
+
 router.get('/api/users/:id', (req, res, next) => {
-    User.findById(req.params.id)
-        .then(apiResult => res.status(200).json(apiResult))
-        .catch(apiError => res.status(500).json(apiError))
+    User.findById(req.session.currentUser._id)
+        .then((apiResult) => {
+            res.status(200).json(apiResult)
+        })
+        .catch((apiError) => {
+            console.log(apiError)
+            res.status(500).json(apiError)
+        })
 });
 
 // Creating a user
