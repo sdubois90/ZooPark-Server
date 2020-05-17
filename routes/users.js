@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const User = require('../models/User');
+// For files (pictures)
+const upload = require("../config/cloudinary");
 
 
 // Find all users
