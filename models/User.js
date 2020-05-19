@@ -8,7 +8,7 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   picture: {
     type: String,
-    default: "./images/default_user.PNG",
+    default: "/images/default_user.PNG",
   },
   description: String,
   group: {
