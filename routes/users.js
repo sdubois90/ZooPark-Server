@@ -15,7 +15,7 @@ router.get('/api/users', (req, res, next) => {
         .catch(apiError => res.status(500).json(apiError))
 })
 
-// Find a user in particular
+// // Find a user in particular
 // router.get('/api/users/:id', (req, res, next) => {
 //     User.findById(req.params.id)
 //         .then(apiResult => res.status(200).json(apiResult))

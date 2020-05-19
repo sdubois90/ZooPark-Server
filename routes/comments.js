@@ -1,15 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const Comment = require('../models/Comment');
+const Post = require('../models/Post');
 
 
 // Find all comments
-router.get('/api/comments', (req, res, next) => {
-    Comment.find({})
-        .then(apiResult => {
-            console.log(apiResult);
-            res.status(200).json(apiResult)
-        })
+router.get('/api/:postId/comments', (req, res, next) => {
+    Post.find({_id: req.params.postId}).populate("comments")
+        .then(specificPost => res.status(200).json(specificPost.data.comments))
         .catch(apiError => res.status(500).json(apiError))
 })
 
@@ -21,9 +19,13 @@ router.get('/api/comments/:id', (req, res, next) => {
 });
 
 // Creating a comment
-router.post('/api/comments', (req, res, next) => {
+router.post('/api/:postId/comments', (req, res, next) => {
     Comment.create(req.body)
-        .then(apiResult => res.status(201).json(apiResult))
+        .then(apiResult =>
+            Post.findByIdAndUpdate({_id: req.params.postId},{ $addToSet: { comments : apiResult.data._id } }, { new: true, useFindAndModify: false })
+            .then((updatedPost)=>res.status(200).json(updatedPost))
+            .catch(apiError => res.status(500).json(apiError))
+        )
         .catch(apiError => res.status(500).json(apiError))
 })
 

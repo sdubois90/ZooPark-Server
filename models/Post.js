@@ -6,8 +6,8 @@ const postSchema = new Schema({
   picture: String, 
   video: String,
   user: { type: Schema.ObjectId, ref: 'User' },
-  comment: { type: Schema.ObjectId, ref: 'Comment' },
-
+  comments: [{ type: Schema.ObjectId, ref: 'Comment' }],
+  likes: [{ type: Schema.ObjectId, ref: 'User' }]
 });
 
 const Post = mongoose.model("Post", postSchema);
