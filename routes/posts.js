@@ -29,10 +29,11 @@ router.get('/api/posts/:id', (req, res, next) => {
 // Need it when receiving a form-data (used if contains files) from the front-end
 router.post('/api/posts', upload.single("picture"), (req, res, next) => {
     // CREATE AN OBJECT WITH THE TEXT AND THE CURRENT USER , AND PASS IT TO THE CREATE
-    console.log(req.session.currentUser._id)
+    console.log("user id",req.session.currentUser._id)
+    console.log("POSTING A COMMENT")
     const userPost = {
         user: req.session.currentUser._id,    // id of the user creating the post
-        text: req.body.text                   // The text of the post
+        text: req.body.text,       // The text of the post
     }
 
     // If req.body contains a file =>
@@ -74,6 +75,25 @@ router.delete('/api/posts/:id', (req, res, next) => {
         .catch((apiError) => {
             res.status(500).json(apiError)
         })
+});
+
+// Updating a like
+router.patch('/api/posts/like/:id', (req, res, next) => {
+    console.log("LIKING A POST")
+    // console.log("USER", req.session.currentUser._id)
+
+    Post.findByIdAndUpdate(req.params.id, { $addToSet: { likes : req.session.currentUser._id } }, { new: true, useFindAndModify: false })
+        .then(apiResult => res.status(200).json(apiResult))
+        .catch(apiError => res.status(500).json(apiError))
+});
+
+
+// Dislike
+router.patch('/api/posts/dislike/:id', (req, res, next) => {
+    console.log("DISLKING A POST")
+    Post.findByIdAndUpdate(req.params.id, { $pull: { likes :  req.session.currentUser._id  } }, { new: true, useFindAndModify: false })
+        .then(apiResult => res.status(200).json(apiResult))
+        .catch(apiError => res.status(500).json(apiError))
 });
 
 
