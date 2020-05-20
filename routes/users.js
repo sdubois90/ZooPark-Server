@@ -41,8 +41,24 @@ router.post('/api/users', (req, res, next) => {
 })
 
 // Updating a user
-router.patch('/api/users/:id', (req, res, next) => {
-    User.findByIdAndUpdate(req.params.id, req.body, {new:true})
+router.patch('/api/users/:id', upload.single("picture"), (req, res, next) => {
+    console.log(req.params.id, req.session.currentUser._id)
+    console.log(req.body)
+    const userInfo = {
+        _id: req.session.currentUser._id,    // id of the user creating the post
+        firstName: req.body.firstName,
+        lastName: req.body.lastName, 
+        email: req.body.email, 
+        description: req.body.description, 
+        group: req.body.group, 
+                                // The text of the post
+    }
+
+       // If req.body contains a file =>
+       if (req.file) {
+        userInfo.picture = req.file.secure_url
+    }
+    User.findByIdAndUpdate(req.params.id, userInfo, {new:true})
     .then(apiResult => res.status(200).json(apiResult))
     .catch(apiError => res.status(500).json(apiError))
 });
