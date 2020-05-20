@@ -8,7 +8,7 @@ const upload = require("../config/cloudinary");
 
 // Find all posts
 router.get('/api/posts', (req, res, next) => {
-    Post.find({}).populate('user')
+    Post.find({}).populate('user').populate("comments")
         .then(apiResult => {
             console.log(apiResult);
             res.status(200).json(apiResult)
