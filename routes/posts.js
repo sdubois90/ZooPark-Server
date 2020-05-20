@@ -31,6 +31,7 @@ router.post('/api/posts', upload.single("picture"), (req, res, next) => {
     // CREATE AN OBJECT WITH THE TEXT AND THE CURRENT USER , AND PASS IT TO THE CREATE
     console.log("user id",req.session.currentUser._id)
     console.log("POSTING A COMMENT")
+    console.log("hello", req.file)
     const userPost = {
         user: req.session.currentUser._id,    // id of the user creating the post
         text: req.body.text,       // The text of the post
@@ -38,7 +39,11 @@ router.post('/api/posts', upload.single("picture"), (req, res, next) => {
 
     // If req.body contains a file =>
     if (req.file) {
-        userPost.picture = req.file.secure_url
+        if (req.file["resource_type"] === 'image') {
+            userPost.picture = req.file.secure_url
+        } else if (req.file["resource_type"] === 'video') {
+            userPost.video = req.file.secure_url
+        }
     }
 
     // Creating : new Post() + save() and we consume the promise by populating it
