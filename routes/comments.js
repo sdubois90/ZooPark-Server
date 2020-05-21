@@ -13,7 +13,7 @@ router.get('/api/:postId/comments', (req, res, next) => {
 
 // Find a comment in particular
 router.get('/api/comments/:id', (req, res, next) => {
-    Comment.findById(req.params.id)
+    Comment.findById(req.params.id).populate("user")
         .then(apiResult => res.status(200).json(apiResult))
         .catch(apiError => res.status(500).json(apiError))
 });
@@ -35,7 +35,8 @@ router.post('/api/:postId/comments', upload.single("picture"), (req, res, next) 
     Comment.create(comment)
         .then(apiResult => {
             console.log(apiResult)
-            Post.findByIdAndUpdate({_id: req.params.postId},{ $addToSet: { comments : apiResult._id } }, { new: true, useFindAndModify: false }).populate("comments")
+         // Post.findByIdAndUpdate({_id: req.params.postId},{ $addToSet: { comments : apiResult._id } }, { new: true, useFindAndModify: false }).populate("comments")
+            Post.findByIdAndUpdate({_id: req.params.postId},{ $addToSet: { comments : apiResult._id } }, { new: true, useFindAndModify: false })
                 .then((updatedPost)=>res.status(200).json(updatedPost))
                 .catch(apiError => res.status(500).json(apiError))
         })

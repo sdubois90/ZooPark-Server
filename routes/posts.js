@@ -8,7 +8,15 @@ const upload = require("../config/cloudinary");
 
 // Find all posts
 router.get('/api/posts', (req, res, next) => {
-    Post.find({}).populate('user').populate("comments")
+    // We populate the "user" path inside the array of "comments" inside the "post" model
+    // It's a nested object of "user" inside the "comments" nested inside the "post" model
+    Post.find({}).populate('user').populate({
+        path: 'comments',
+        populate: {
+            path: 'user',
+            model: 'User'
+        }
+    })
         .then(apiResult => {
             console.log(apiResult);
             res.status(200).json(apiResult)
@@ -29,7 +37,7 @@ router.get('/api/posts/:id', (req, res, next) => {
 // Need it when receiving a form-data (used if contains files) from the front-end
 router.post('/api/posts', upload.single("picture"), (req, res, next) => {
     // CREATE AN OBJECT WITH THE TEXT AND THE CURRENT USER , AND PASS IT TO THE CREATE
-    console.log("user id",req.session.currentUser._id)
+    console.log("user id", req.session.currentUser._id)
     console.log("POSTING A COMMENT")
     console.log("hello", req.file)
     const userPost = {
@@ -87,7 +95,7 @@ router.patch('/api/posts/like/:id', (req, res, next) => {
     console.log("LIKING A POST")
     // console.log("USER", req.session.currentUser._id)
 
-    Post.findByIdAndUpdate(req.params.id, { $addToSet: { likes : req.session.currentUser._id } }, { new: true, useFindAndModify: false })
+    Post.findByIdAndUpdate(req.params.id, { $addToSet: { likes: req.session.currentUser._id } }, { new: true, useFindAndModify: false })
         .then(apiResult => res.status(200).json(apiResult))
         .catch(apiError => res.status(500).json(apiError))
 });
@@ -96,7 +104,7 @@ router.patch('/api/posts/like/:id', (req, res, next) => {
 // Dislike
 router.patch('/api/posts/dislike/:id', (req, res, next) => {
     console.log("DISLKING A POST")
-    Post.findByIdAndUpdate(req.params.id, { $pull: { likes :  req.session.currentUser._id  } }, { new: true, useFindAndModify: false })
+    Post.findByIdAndUpdate(req.params.id, { $pull: { likes: req.session.currentUser._id } }, { new: true, useFindAndModify: false })
         .then(apiResult => res.status(200).json(apiResult))
         .catch(apiError => res.status(500).json(apiError))
 });
